@@ -1,0 +1,17 @@
+[package]
+name = "engine"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bytemuck = { version = "1.13.1", features = [ "derive" ] }
+log = "0.4.17"
+png = "0.17.8"
+pollster = "0.3.0"
+wgpu = "0.16.1"
+winit = "0.28.6"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"

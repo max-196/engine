@@ -1,0 +1,14 @@
+use crate::err::macros::*;
+
+pub enum NewError {
+    // Some(SomeError)
+}
+
+impl_error!(NewError,
+    // Some(e) => "In some: {}", e;
+
+);
+
+impl_error_conversions!(NewError,
+    // SomeError => Some,
+);
