@@ -1,6 +1,6 @@
 use super::Renderer;
 
-use crate::{math::{Zero, Vec3, Quat, Angle}, client::{renderer::{resources::image::{CubeMap, texture::TextureEntry}}, PathManager}};
+use crate::{math::{Zero, Vec3, Quat, Angle}, client::{renderer::{resources::image::{CubeMap, texture::TextureEntry}, pipeline::PipelineBuilder}, PathManager}};
 
 use {
     crate::client::Window,
@@ -60,17 +60,14 @@ impl Renderer {
 
         let model = model::load_model("assets/models/barrel.obj", &state, path_m)?;
 
-        let pipeline = pipeline::Pipeline::new(
-            &state,
-            &[&material_layout.0, &uniform_layout_vf.0, light.layout(), &uniform_layout_v.0],
+        let pipeline = PipelineBuilder::new(
             vertex_shader.vs_state(&[model::ModelVertex::desc(), crate::instance::InstanceRaw::desc()]),
             Some(fragment_shader.fs_state(&[Some(wgpu::ColorTargetState {
                 format: super::framebuffer::FRAMEBUFFER_FORMAT,
                 blend: Some(wgpu::BlendState::REPLACE),
                 write_mask: wgpu::ColorWrites::ALL,
             })])),
-            true,
-        );
+        ).enable_depth().with_bg_layouts(&[&material_layout.0, &uniform_layout_vf.0, light.layout(), &uniform_layout_v.0]).construct(&state);
 
         let framebuffer = FrameBuffer::new(&state, &state.config)?;
 
@@ -96,17 +93,17 @@ impl Renderer {
 
         let sky_shader = shader::Shader::import_combined(&state, ("vs_main", "fs_main"), std::path::Path::new("assets/shaders/sky.wgsl"), "Sky cubemap shader")?;
 
-        let sky_pipeline = pipeline::Pipeline::new(
-            &state,
-            &[&uniform_layout_vf.0, &cubemap.bg.layout.0],
+        let sky_pipeline = PipelineBuilder::new(
             sky_shader.vs_state(&[]),
-            Some(sky_shader.fs_state(&[Some(wgpu::ColorTargetState {
-                format: super::framebuffer::FRAMEBUFFER_FORMAT,
-                blend: Some(wgpu::BlendState::REPLACE),
-                write_mask: wgpu::ColorWrites::ALL,
-            })])),
-            true,
-        );
+                Some(sky_shader.fs_state(&[Some(wgpu::ColorTargetState {
+                    format: super::framebuffer::FRAMEBUFFER_FORMAT,
+                    blend: Some(wgpu::BlendState::REPLACE),
+                    write_mask: wgpu::ColorWrites::ALL,
+                })]))
+            ).enable_depth().with_depth_compare_function(wgpu::CompareFunction::LessEqual)
+            .with_bg_layouts(&[&uniform_layout_vf.0, &cubemap.bg.layout.0])
+            .construct(&state);
+
         log::info!("Renderer configured");
         Ok(Self { state, pipeline, instances, instance_buffer, depth_texture, model, light, framebuffer, postfx, cubemap, sky_pipeline })
     }

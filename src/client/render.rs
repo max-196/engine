@@ -17,6 +17,6 @@ impl <'a> Client<'a> {
         // }
 
 
-        self.renderer.render(self.player.camera_bg(), &self.time, &self.input)
+        self.renderer.render(self.player.camera_bg(), &self.time, &self.input, &self.gui)
     }
 }

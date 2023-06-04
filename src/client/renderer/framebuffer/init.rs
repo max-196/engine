@@ -18,7 +18,7 @@ impl FrameBuffer {
         let target_tex = Texture::create_frame_texture(state, config);
         let sample_tex = Texture::create_frame_texture(state, config);
 
-        let vpath = std::path::Path::new("assets/shaders/2d_vertex.wgsl");
+        let vpath = std::path::Path::new("assets/shaders/framebuffer_vertex.wgsl");
         let fpath = std::path::Path::new("assets/shaders/fbuffer_fragment.wgsl");
 
         let vshader = Shader::import_vert(state, "vs_main", vpath, "Framebuffer vertex shader",)?;

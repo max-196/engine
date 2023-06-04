@@ -3,14 +3,19 @@ pub mod resources;
 pub mod gpu;
 pub mod err;
 pub mod state;
+pub mod pipeline;
 
 mod render;
-mod pipeline;
 mod light;
 mod framebuffer;
 mod postfx;
 
 pub use err::RendererError;
+
+pub use {
+    pipeline::Pipeline,
+    framebuffer::FRAMEBUFFER_FORMAT,
+};
 
 use {
     crate::instance::Instance,

@@ -3,12 +3,15 @@ pub mod window;
 pub mod time;
 pub mod input;
 pub mod path;
+pub mod gui;
 
 mod player;
 mod render;
 
 use player::Player;
 use crate::err::Error;
+
+use self::gui::GuiElement;
 
 pub use {
     window::Window,
@@ -17,6 +20,7 @@ pub use {
     input::InputMapping,
     input::InputManager,
     path::PathManager,
+    gui::Gui,
 };
 
 pub struct Client<'a> {
@@ -26,6 +30,7 @@ pub struct Client<'a> {
     pub time:     Time,
     pub input:    InputManager<'a>,
     pub path_m:   PathManager,
+    pub gui:      Gui,
 }
 
 impl <'a> Client<'a> {
@@ -50,7 +55,28 @@ impl <'a> Client<'a> {
         input.register_mapping("cursor_hide", winit::event::VirtualKeyCode::F1);
         input.register_mapping("cursor_grab", winit::event::VirtualKeyCode::F2);
 
-        Ok(Client {renderer, player, window, time, input, path_m })
+        let mut gui = gui::Gui::new(&renderer.state, &path_m, 8)?;
+
+        gui.add(
+            GuiElement::new(0)
+                .set_pos(gui::Pos::Pixel2D((50, 50).into()))
+                .set_size(gui::Size::PixelSquare(50))
+                .set_color((1.0, 0.0, 0.0, 1.0))
+                .set_min_size(gui::Size::Pixel2D((100, 100).into())),
+            Some(&renderer.state)
+        );
+
+        gui.add(
+            GuiElement::new(0)
+                .set_size(gui::Size::RelYSquare(0.5))
+                .set_color((0.0, 1.0, 0.0, 1.0))
+                .set_circle(true)
+                .set_origin(gui::element::Origin::BottomRight)
+                .set_pos(gui::Pos::Rel2D((1., 1.).into())),
+            Some(&renderer.state)
+        );
+
+        Ok(Client {renderer, player, window, time, input, path_m, gui })
     }
 
     pub fn device_input(&mut self, event: &winit::event::DeviceEvent) {
@@ -65,7 +91,10 @@ impl <'a> Client<'a> {
 
     pub fn resize(&mut self, new_size: winit::dpi::PhysicalSize<u32>) {
         self.renderer.resize(new_size);
+
+
         self.player.resize(new_size.width, new_size.height);
+        self.gui.resize(&self.renderer.state);
     }
 
 

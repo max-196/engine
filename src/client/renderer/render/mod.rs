@@ -1,4 +1,4 @@
-use crate::client::InputManager;
+use crate::client::{InputManager, Gui};
 
 use {
     crate::client::renderer::{
@@ -9,7 +9,7 @@ use {
 
 
 impl Renderer {
-    pub fn render(&mut self, camera_bg: &wgpu::BindGroup, time: &Time, inp: &InputManager) -> Result<(), wgpu::SurfaceError> {
+    pub fn render(&mut self, camera_bg: &wgpu::BindGroup, time: &Time, inp: &InputManager, gui: &Gui) -> Result<(), wgpu::SurfaceError> {
         let mut render_state = RenderState::new(&self.state)?;
 
         {
@@ -68,6 +68,8 @@ impl Renderer {
         }
 
         self.render_framebuffer(&mut render_state);
+
+        gui.render(&mut render_state);
 
         render_state.finish(&self.state);
 

@@ -20,7 +20,7 @@ pub struct BoxBlur {
 
 impl BoxBlur {
     pub fn new(state: &State, framebuffer_layout: &wgpu::BindGroupLayout, radius: u32) -> Result<Self, GpuResourceError> {
-        let vpath = std::path::Path::new("assets/shaders/2d_vertex.wgsl");
+        let vpath = std::path::Path::new("assets/shaders/framebuffer_vertex.wgsl");
         let fpath = std::path::Path::new("assets/shaders/boxblur_fragment.wgsl");
         let vshader = Shader::import_vert(state, "vs_main", vpath, "Framebuffer vertex shader")?;
         let fshader = Shader::import_frag(state, "fs_main", fpath, "Chromatic aberration fragment shader")?;

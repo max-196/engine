@@ -3,7 +3,7 @@ mod projection;
 mod uniform;
 mod physical;
 
-use crate::{common::math::angle::Angle, client::InputManager};
+use crate::{common::math::angle::Angle, client::{InputManager, Time}};
 
 
 use {

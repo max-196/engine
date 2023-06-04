@@ -10,33 +10,33 @@ pub struct Shader<'a> {
 }
 
 impl <'a> Shader<'a> {
-    pub fn import_vert(state: &State, entry: &'a str, path: &std::path::Path, label: &'a str) -> Result<Self, ShaderError> {
+    pub fn import_vert<T: AsRef<std::path::Path>>(state: &State, entry: &'a str, path: T, label: &'a str) -> Result<Self, ShaderError> {
         let ty = ShaderType::Vertex(entry);
         Ok(Self::new(
             state,
             label,
             ty,
-            wgpu::ShaderSource::Wgsl(crate::files::read_file(std::path::Path::new(path))?.0.into()),
+            wgpu::ShaderSource::Wgsl(crate::files::read_file(std::path::Path::new(path.as_ref()))?.0.into()),
         ))
     }
 
-    pub fn import_frag(state: &State, entry: &'a str, path: &std::path::Path, label: &'a str) -> Result<Self, ShaderError> {
+    pub fn import_frag<T: AsRef<std::path::Path>>(state: &State, entry: &'a str, path: T, label: &'a str) -> Result<Self, ShaderError> {
         let ty = ShaderType::Fragment(entry);
         Ok(Self::new(
             state,
             label,
             ty,
-            wgpu::ShaderSource::Wgsl(crate::files::read_file(std::path::Path::new(path))?.0.into()),
+            wgpu::ShaderSource::Wgsl(crate::files::read_file(std::path::Path::new(path.as_ref()))?.0.into()),
         ))
     }
 
-    pub fn import_combined(state: &State, entry: (&'a str, &'a str), path: &std::path::Path, label: &'a str) -> Result<Self, ShaderError> {
+    pub fn import_combined<T: AsRef<std::path::Path>>(state: &State, entry: (&'a str, &'a str), path: T, label: &'a str) -> Result<Self, ShaderError> {
         let ty = ShaderType::VertexFragment(entry.0, entry.1);
         Ok(Self::new(
             state,
             label,
             ty,
-            wgpu::ShaderSource::Wgsl(crate::files::read_file(std::path::Path::new(path))?.0.into()),
+            wgpu::ShaderSource::Wgsl(crate::files::read_file(std::path::Path::new(path.as_ref()))?.0.into()),
         ))
     }
 

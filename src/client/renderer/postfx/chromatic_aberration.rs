@@ -20,7 +20,7 @@ pub struct ChromaticAberration {
 
 impl ChromaticAberration {
     pub fn new(state: &State, framebuffer_layout: &wgpu::BindGroupLayout, off: f32) -> Result<Self, GpuResourceError> {
-        let vpath = std::path::Path::new("assets/shaders/2d_vertex.wgsl");
+        let vpath = std::path::Path::new("assets/shaders/framebuffer_vertex.wgsl");
         let fpath = std::path::Path::new("assets/shaders/chrab_fragment.wgsl");
 
         let vshader = Shader::import_vert(state, "vs_main", vpath, "Framebuffer vertex shader")?;
